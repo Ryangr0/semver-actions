@@ -1,0 +1,11 @@
+### Health Check
+# @no-cookie-jar
+GET {{host}}
+OH-DEAR-HEALTH-CHECK-SECRET: {{secret}}
+Accept: {{accept}}
+
+### Health Check wrong secret
+# @no-cookie-jar
+GET {{host}}
+OH-DEAR-HEALTH-CHECK-SECRET: wrong
+Accept: {{accept}}

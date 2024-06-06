@@ -1,0 +1,84 @@
+{
+  "branches": [
+    "main",
+    "development"
+  ],
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    [
+      "@semantic-release/changelog",
+      {
+        "changelogFile": "CHANGELOG.md"
+      }
+    ],
+    [
+      "@semantic-release/git",
+      {
+        "assets": ["composer.json", "package.json", "CHANGELOG.md", "docs"],
+        "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+      }
+    ],
+    [
+      "@semantic-release/github",
+      {
+        "assets": [
+          { "path": "dist/*.zip", "label": "Magento distribution" },
+          { "path": "docs/*", "label": "Documentation" }
+        ]
+      }
+    ],
+    [
+      "@semantic-release/slack-bot",
+      {
+        "notifyOnSuccess": true,
+        "notifyOnFail": true,
+        "markdownReleaseNotes": true
+      }
+    ],
+    [
+      "@semantic-release/exec",
+      {
+        "publishCmd": "echo 'Publishing version ${nextRelease.version} to external service'",
+        "successCmd": "echo 'Release ${nextRelease.version} was successful'",
+        "failCmd": "echo 'Release ${nextRelease.version} failed'"
+      }
+    ],
+    [
+      "@semantic-release/exec",
+      {
+        "prepareCmd": "npm run build && npm run test"
+      }
+    ],
+    [
+      "@semantic-release/gitlab",
+      {
+        "assets": [
+          { "path": "dist/*.zip", "label": "Magento distribution" },
+          { "path": "docs/*", "label": "Documentation" }
+        ]
+      }
+    ],
+    [
+      "semantic-release-helm",
+      {
+        "name": "my-chart",
+        "repository": "https://charts.webgrip.nl",
+        "chartPath": "ops/helm/my-chart",
+      }
+    ],
+    [
+      "semantic-release-docker",
+      {
+        "name": "mycompany/myapp",
+        "registryUrl": "https://index.docker.io/v1/"
+      }
+    ],
+    [
+      "@semantic-release/exec",
+      {
+        "successCmd": "curl -X POST -H 'Content-type: application/json' --data '{\"text\":\"A new release (${nextRelease.version}) is available!\"}' https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX"
+      }
+    ]
+  ]
+}

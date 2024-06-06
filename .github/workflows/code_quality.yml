@@ -1,0 +1,29 @@
+name: Code Quality
+
+on:
+  push:
+    branches:
+      - development
+      - production
+
+jobs:
+  code_quality:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-progress --no-suggest
+
+      - name: PHPStan analysis
+        run: vendor/bin/phpstan analyse
+
+      - name: PHP-CS-Fixer
+        run: vendor/bin/php-cs-fixer fix --dry-run --diff

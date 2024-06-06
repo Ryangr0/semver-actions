@@ -1,0 +1,48 @@
+name: Merge to Development
+
+on:
+  push:
+    branches:
+      - development
+
+jobs:
+  bump_version:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Determine version bump
+        id: version_bump
+        run: |
+          BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
+          if [[ $BRANCH_NAME == fix/* ]]; then
+            echo "::set-output name=version::patch"
+          elif [[ $BRANCH_NAME == feat/* || $BRANCH_NAME == feature/* ]]; then
+            echo "::set-output name=version::minor"
+          else
+            echo "::set-output name=version::patch"
+          fi
+
+      - name: Set up semantic-release
+        run: npm install -g semantic-release @semantic-release/changelog @semantic-release/git
+
+      - name: Run semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION_BUMP: ${{ steps.version_bump.outputs.version }}
+        run: |
+          npx semantic-release --branches development --release-as ${VERSION_BUMP}
+
+      - name: Deploy to staging
+        run: dep deploy staging
+        env:
+          DEPLOYER_PRIVATE_KEY: ${{ secrets.DEPLOYER_PRIVATE_KEY }}
+          DEPLOYER_HOST: ${{ secrets.STAGING_HOST }}
+          DEPLOYER_USER: ${{ secrets.STAGING_USER }}

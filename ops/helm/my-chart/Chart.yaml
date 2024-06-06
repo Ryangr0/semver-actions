@@ -1,0 +1,17 @@
+apiVersion: v2
+name: 'semver-actions'
+version: 0.1.0
+description: Infrastructure charts for webgrip.nl
+type: application
+keywords:
+  - 'semver-actions'
+home: https://webgrip.nl
+sources:
+  - https://github.com/webgrip/semver-actions
+maintainers:
+  - name: Ryan Grippeling
+    email: ryan@webgrip.nl
+appVersion: "1.0.0"
+deprecated: false
+annotations:
+  example: A list of annotations keyed by name (optional).

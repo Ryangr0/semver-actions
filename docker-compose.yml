@@ -1,0 +1,21 @@
+services:
+  php:
+    build:
+      context: .
+      dockerfile: ./ops/docker/php-fpm/Dockerfile
+    volumes:
+      - .:/var/www
+
+  nginx:
+    build:
+      context: ./ops/docker/nginx
+      dockerfile: Dockerfile
+    volumes:
+      - .:/var/www
+    ports:
+      - 8080:80
+
+networks:
+  default:
+    external: true
+    name: magento

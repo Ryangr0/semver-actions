@@ -1,0 +1,35 @@
+name: Database Migration and Seeding
+
+on:
+  push:
+    branches:
+      - production
+
+jobs:
+  migrate_and_seed:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-progress --no-suggest
+
+      - name: Run migrations
+        run: php artisan migrate --force
+
+      - name: Seed database
+        run: php artisan db:seed --force
+
+      - name: Deploy to production
+        run: dep deploy production
+        env:
+          DEPLOYER_PRIVATE_KEY: ${{ secrets.DEPLOYER_PRIVATE_KEY }}
+          DEPLOYER_HOST: ${{ secrets.PRODUCTION_HOST }}
+          DEPLOYER_USER: ${{ secrets.PRODUCTION_USER }}
