@@ -12,20 +12,9 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '7.4'
-
-      - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest
-
-      - name: Run Magento static tests
-        run: |
-          vendor/bin/phpcs --standard=Magento2 app/code
-          vendor/bin/phpmd app/code text cleancode,codesize,controversial,design,naming,unusedcode
-
-      - name: Run Magento unit tests
-        run: vendor/bin/phpunit -c dev/tests/unit/phpunit.xml.dist
+          php-version: '8.3'

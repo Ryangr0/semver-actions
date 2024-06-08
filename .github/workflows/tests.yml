@@ -1,14 +1,13 @@
-name: PHP CI
+name: Tests
 
-# on push to all branches, and for PRs to main
 on:
   push:
     branches:
-      - '*'
+      - "*"
   pull_request:
     branches:
-      - main
-
+      - development
+      - production
 
 jobs:
   build:
